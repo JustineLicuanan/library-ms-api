@@ -1,8 +1,32 @@
 import { Request, Response } from 'express';
 
+import { handleBookError } from '../lib/errorHandler';
+import Book from '../models/BookModel';
+
 // Add a book
-export const addBook_post = (req: Request, res: Response) => {
-	//
+export const addBook_post = async (req: Request, res: Response) => {
+	try {
+		const book = new Book({
+			ISBN: req.body.ISBN,
+			title: req.body.title,
+			subject: req.body.subject,
+			publisher: req.body.publisher,
+			language: req.body.language,
+			numberOfPages: req.body.numberOfPages,
+			authors: req.body.authors,
+		});
+
+		// Save new book to database
+		await book.save();
+
+		res.status(201).json({
+			success: true,
+			message: 'Book created successfully',
+			book,
+		});
+	} catch (err) {
+		handleBookError(res, err, true);
+	}
 };
 
 // Get all books
