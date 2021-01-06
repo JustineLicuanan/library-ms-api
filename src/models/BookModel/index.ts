@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import isISBN from 'validator/es/lib/isISBN';
+import isISBN from 'validator/lib/isISBN';
 
 import { hasAtLeastOneElement } from '../../lib/validator';
 import { IBook } from '../../types/BookType';

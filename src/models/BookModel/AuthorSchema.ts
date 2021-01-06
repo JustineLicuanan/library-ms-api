@@ -14,6 +14,7 @@ const AuthorSchema = new Schema(
 		description: {
 			type: String,
 			trim: true,
+			required: [true, 'Author description field is required'],
 		},
 	},
 	{ timestamps: true }

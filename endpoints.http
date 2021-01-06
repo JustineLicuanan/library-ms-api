@@ -1,0 +1,24 @@
+@host = http://127.0.0.1:{{$dotenv PORT}}
+
+# Add book endpoint
+POST {{host}}/books
+Content-Type: application/json
+
+{
+   "ISBN": "",
+   "title": "",
+   "subject": "",
+   "publisher": "",
+   "language": "",
+   "numberOfPages": "",
+   "authors": [
+      {
+         "name": "",
+         "description": ""
+      },
+      {
+         "name": "",
+         "description": ""
+      }
+   ]
+}
