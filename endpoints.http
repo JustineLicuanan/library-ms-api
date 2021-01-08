@@ -12,3 +12,8 @@ Content-Type: application/json
    "language": "",
    "number_of_pages": 7
 }
+
+###
+
+# Get all books endpoint
+GET {{host}}/books

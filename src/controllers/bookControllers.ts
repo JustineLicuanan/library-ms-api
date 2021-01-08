@@ -39,8 +39,16 @@ export const addBook_post = async (req: Request, res: Response) => {
 };
 
 // Get all books
-export const getAllBooks_get = (req: Request, res: Response) => {
-	//
+export const getAllBooks_get = async (req: Request, res: Response) => {
+	try {
+		const books = await Book.find();
+		res.json(books);
+	} catch (err) {
+		res.status(500).json({
+			error: true,
+			message: 'Internal server error',
+		});
+	}
 };
 
 // Get single book
