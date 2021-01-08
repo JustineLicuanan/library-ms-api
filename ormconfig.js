@@ -1,12 +1,21 @@
 process.env.NODE_ENV !== 'production' && require('dotenv').config();
 
+const {
+	HOST = 'localhost',
+	DB_PORT = '5432',
+	DB_TYPE = 'postgres',
+	DB_NAME = 'test',
+	DB_USERNAME = 'postgres',
+	DB_PASS = 'test',
+} = process.env;
+
 module.exports = {
-	type: process.env.DB_TYPE,
-	host: process.env.HOST,
-	port: process.env.DB_PORT,
-	username: process.env.DB_USERNAME,
-	password: process.env.DB_PASS,
-	database: process.env.DB_NAME,
+	type: DB_TYPE,
+	host: HOST,
+	port: DB_PORT,
+	username: DB_USERNAME,
+	password: DB_PASS,
+	database: DB_NAME,
 	synchronize: true,
 	logging: false,
 	entities: ['src/entity/**/*.ts'],

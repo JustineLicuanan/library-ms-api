@@ -5,20 +5,10 @@ POST {{host}}/books
 Content-Type: application/json
 
 {
-   "ISBN": "",
+   "isbn": "",
    "title": "",
    "subject": "",
    "publisher": "",
    "language": "",
-   "numberOfPages": "",
-   "authors": [
-      {
-         "name": "",
-         "description": ""
-      },
-      {
-         "name": "",
-         "description": ""
-      }
-   ]
+   "number_of_pages": 7
 }
