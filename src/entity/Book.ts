@@ -6,10 +6,13 @@ import {
 	CreateDateColumn,
 	UpdateDateColumn,
 	BeforeInsert,
+	ManyToMany,
+	JoinTable,
 } from 'typeorm';
-import { IsISBN, IsNumber, IsString } from 'class-validator';
+import { ArrayNotEmpty, IsISBN, IsNumber, IsString } from 'class-validator';
 
 import { IsISBNAlreadyExist, IsNotBlank } from '../lib/validator';
+import { Author } from './Author';
 
 @Entity('books')
 export class Book extends BaseEntity {
@@ -46,6 +49,11 @@ export class Book extends BaseEntity {
 	@Column()
 	@IsNumber()
 	number_of_pages: number;
+
+	@ManyToMany(() => Author, (author) => author.books)
+	@JoinTable()
+	@ArrayNotEmpty()
+	authors: Author[];
 
 	@CreateDateColumn()
 	created_at: Date;

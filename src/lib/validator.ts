@@ -39,8 +39,7 @@ export const IsNotBlank = (
 		constraints: [property],
 		options: validationOptions,
 		validator: {
-			validate: (value: any) =>
-				typeof value === 'string' && !!value.trim().length,
+			validate: (value: any) => typeof value === 'string' && !!value.trim(),
 		},
 	});
 };
