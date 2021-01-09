@@ -23,3 +23,8 @@ GET {{host}}/books
 
 # Get single book endpoint
 GET {{host}}/books/{{isbn}}
+
+###
+
+# Delete book endpoint
+DELETE {{host}}/books/{{isbn}}

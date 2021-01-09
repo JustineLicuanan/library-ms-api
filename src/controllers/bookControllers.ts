@@ -27,7 +27,7 @@ export const addBook_post = async (req: Request, res: Response) => {
 
 		res.status(201).json({
 			success: true,
-			message: 'Book created successfully',
+			message: 'Book added successfully',
 			book,
 		});
 	} catch (err) {
@@ -87,6 +87,37 @@ export const updateBook_patch = (req: Request, res: Response) => {
 };
 
 // Delete a book
-export const deleteBook_delete = (req: Request, res: Response) => {
-	//
+export const deleteBook_delete = async (req: Request, res: Response) => {
+	const { isbn } = req.params;
+	if (isbn === null || isbn === undefined) {
+		res.status(400).json({
+			error: true,
+			message: 'ISBN cannot be null, or undefined',
+		});
+		return;
+	}
+
+	try {
+		const book = await Book.findOne({ isbn });
+		if (!book) {
+			res.status(404).json({
+				error: true,
+				message: 'Book not found',
+			});
+			return;
+		}
+
+		// Remove book to database
+		await book.remove();
+
+		res.json({
+			success: true,
+			message: 'Book deleted successfully',
+		});
+	} catch (err) {
+		res.status(500).json({
+			error: true,
+			message: 'Internal server error',
+		});
+	}
 };
