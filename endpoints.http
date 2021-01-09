@@ -6,7 +6,7 @@ POST {{host}}/books
 Content-Type: application/json
 
 {
-   "isbn": "",
+   "isbn": "{{isbn}}",
    "title": "",
    "subject": "",
    "publisher": "",
@@ -28,3 +28,18 @@ GET {{host}}/books/{{isbn}}
 
 # Delete book endpoint
 DELETE {{host}}/books/{{isbn}}
+
+###
+
+# Update book endpoint
+PATCH {{host}}/books/{{isbn}}
+Content-Type: application/json
+
+{
+   "isbn": "{{isbn}}",
+   "title": "",
+   "subject": "",
+   "publisher": "",
+   "language": "",
+   "number_of_pages": 7
+}

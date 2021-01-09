@@ -1,7 +1,9 @@
 import { validate } from 'class-validator';
 
-export const handleClassValidatorError = async (instance: any) => {
-	const errors = await validate(instance);
+export const handleClassValidatorError = async (instance: any, skip?: true) => {
+	const errors = !skip
+		? await validate(instance)
+		: await validate(instance, { skipMissingProperties: true });
 
 	if (errors.length) {
 		const err: any = {};
