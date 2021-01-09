@@ -6,12 +6,12 @@ import {
 	CreateDateColumn,
 	UpdateDateColumn,
 	BeforeInsert,
-	ManyToMany,
+	OneToMany,
 } from 'typeorm';
 import { IsString } from 'class-validator';
 
 import { IsNotBlank } from '../lib/validator';
-import { Book } from './Book';
+import { BookToAuthor } from './BookToAuthor';
 
 @Entity('authors')
 export class Author extends BaseEntity {
@@ -28,8 +28,8 @@ export class Author extends BaseEntity {
 	@IsNotBlank('description', { message: 'Description field cannot be blank' })
 	description: string;
 
-	@ManyToMany(() => Book, (book) => book.authors)
-	books: Book[];
+	@OneToMany(() => BookToAuthor, (bookToAuthor) => bookToAuthor.author)
+	public book_to_authors!: BookToAuthor[];
 
 	@CreateDateColumn()
 	created_at: Date;

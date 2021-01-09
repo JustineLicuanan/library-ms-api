@@ -1,6 +1,6 @@
 {
 	"name": "library-ms-api",
-	"version": "0.10.2",
+	"version": "0.11.0",
 	"main": "dist/app.js",
 	"scripts": {
 		"dev": "nodemon src/app.ts",
