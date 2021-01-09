@@ -1,4 +1,5 @@
 @host = http://127.0.0.1:{{$dotenv PORT}}
+@isbn = 978-3-16-148410-0
 
 # Add book endpoint
 POST {{host}}/books
@@ -17,3 +18,8 @@ Content-Type: application/json
 
 # Get all books endpoint
 GET {{host}}/books
+
+###
+
+# Get single book endpoint
+GET {{host}}/books/{{isbn}}

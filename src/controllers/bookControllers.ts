@@ -52,8 +52,33 @@ export const getAllBooks_get = async (req: Request, res: Response) => {
 };
 
 // Get single book
-export const getBook_get = (req: Request, res: Response) => {
-	//
+export const getBook_get = async (req: Request, res: Response) => {
+	const { isbn } = req.params;
+	if (isbn === null || isbn === undefined) {
+		res.status(400).json({
+			error: true,
+			message: 'ISBN cannot be null, or undefined',
+		});
+		return;
+	}
+
+	try {
+		const book = await Book.findOne({ isbn });
+		if (!book) {
+			res.status(404).json({
+				error: true,
+				message: 'Book not found',
+			});
+			return;
+		}
+
+		res.json(book);
+	} catch (err) {
+		res.status(500).json({
+			error: true,
+			message: 'Internal server error',
+		});
+	}
 };
 
 // Update a book
