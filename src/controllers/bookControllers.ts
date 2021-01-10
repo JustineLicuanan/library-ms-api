@@ -79,7 +79,9 @@ export const addBook_post = async (req: Request, res: Response) => {
 // Get all books
 export const getAllBooks_get = async (req: Request, res: Response) => {
 	try {
-		const books = await Book.find();
+		const books = await Book.find({
+			relations: ['book_to_authors', 'book_to_authors.author'],
+		});
 		res.json(books);
 	} catch (err) {
 		res.status(500).json({
@@ -101,7 +103,10 @@ export const getBook_get = async (req: Request, res: Response) => {
 	}
 
 	try {
-		const book = await Book.findOne({ isbn });
+		const book = await Book.findOne(
+			{ isbn },
+			{ relations: ['book_to_authors', 'book_to_authors.author'] }
+		);
 		if (!book) {
 			res.status(404).json({
 				error: true,

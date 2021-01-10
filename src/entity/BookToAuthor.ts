@@ -15,11 +15,11 @@ export class BookToAuthor extends BaseEntity {
 	@PrimaryGeneratedColumn()
 	public book_to_author_id!: number;
 
-	@Column()
+	@Column({ select: false })
 	@IsNumber()
 	public bookId!: number;
 
-	@Column()
+	@Column({ select: false })
 	@IsNumber()
 	public authorId!: number;
 
