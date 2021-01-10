@@ -1,11 +1,40 @@
 import { Request, Response } from 'express';
 
+import { areAllArrayElementsIs } from '../lib/validator';
 import { handleClassValidatorError } from '../lib/errorHandler';
 import { Book } from '../entity/Book';
+import { Author } from '../entity/Author';
+import { BookToAuthor } from '../entity/BookToAuthor';
 
 // Add a book
 export const addBook_post = async (req: Request, res: Response) => {
+	const { authors: bodyAuthors } = req.body;
+
 	try {
+		// Check if all authors array elements are integers
+		const authorPass = areAllArrayElementsIs(bodyAuthors, Number.isInteger);
+		if (!authorPass) {
+			res.json({
+				error: true,
+				message: 'Authors field is required, and must be an array of integers',
+			});
+			return;
+		}
+
+		// Check if there are missing authors
+		const authors = await Author.findByIds(bodyAuthors);
+		const missingAuthors = bodyAuthors.length - authors.length;
+		if (missingAuthors) {
+			res.json({
+				error: true,
+				message: `${
+					missingAuthors > 1 ? `${missingAuthors} authors` : 'Author'
+				} not found`,
+			});
+			return;
+		}
+
+		// Create book instance
 		const book = Book.create({
 			isbn: req.body.isbn,
 			title: req.body.title,
@@ -24,6 +53,15 @@ export const addBook_post = async (req: Request, res: Response) => {
 
 		// Save new book to database
 		await book.save();
+		await Promise.all(
+			authors.map(async (author) => {
+				const bookToAuthor = BookToAuthor.create({
+					bookId: book.id,
+					authorId: author.id,
+				});
+				return await bookToAuthor.save();
+			})
+		);
 
 		res.status(201).json({
 			success: true,

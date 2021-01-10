@@ -1,11 +1,17 @@
-import { Entity, Column, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+	Entity,
+	Column,
+	ManyToOne,
+	PrimaryGeneratedColumn,
+	BaseEntity,
+} from 'typeorm';
 import { IsNumber } from 'class-validator';
 
 import { Book } from './Book';
 import { Author } from './Author';
 
 @Entity('books_to_authors')
-export class BookToAuthor {
+export class BookToAuthor extends BaseEntity {
 	@PrimaryGeneratedColumn()
 	public book_to_author_id!: number;
 

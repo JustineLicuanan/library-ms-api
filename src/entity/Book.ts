@@ -8,9 +8,9 @@ import {
 	BeforeInsert,
 	OneToMany,
 } from 'typeorm';
-import { ArrayNotEmpty, IsISBN, IsNumber, IsString } from 'class-validator';
+import { IsISBN, IsNumber, IsString } from 'class-validator';
 
-import { IsISBNAlreadyExist, IsNotBlank } from '../lib/validator';
+import { IsISBNAlreadyExist, IsNotBlank } from '../lib/classValidator';
 import { BookToAuthor } from './BookToAuthor';
 
 @Entity('books')
@@ -50,7 +50,6 @@ export class Book extends BaseEntity {
 	number_of_pages: number;
 
 	@OneToMany(() => BookToAuthor, (bookToAuthor) => bookToAuthor.book)
-	@ArrayNotEmpty()
 	public book_to_authors!: BookToAuthor[];
 
 	@CreateDateColumn()

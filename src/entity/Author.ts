@@ -10,7 +10,7 @@ import {
 } from 'typeorm';
 import { IsString } from 'class-validator';
 
-import { IsNotBlank } from '../lib/validator';
+import { IsNotBlank } from '../lib/classValidator';
 import { BookToAuthor } from './BookToAuthor';
 
 @Entity('authors')
