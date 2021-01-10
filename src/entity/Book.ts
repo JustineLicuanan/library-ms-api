@@ -51,7 +51,7 @@ export class Book extends BaseEntity {
 
 	@OneToMany(() => BookToAuthor, (bookToAuthor) => bookToAuthor.book)
 	@ArrayNotEmpty()
-	public book_to_authors: BookToAuthor[];
+	public book_to_authors!: BookToAuthor[];
 
 	@CreateDateColumn()
 	created_at: Date;

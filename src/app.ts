@@ -4,6 +4,7 @@ import express from 'express';
 import { createConnection } from 'typeorm';
 
 import bookRoutes from './routes/bookRoutes';
+import authorRoutes from './routes/authorRoutes';
 
 // Inits
 process.env.NODE_ENV !== 'production' && dotenv.config();
@@ -25,3 +26,4 @@ app.use(express.json());
 
 // Routes
 app.use('/books', bookRoutes);
+app.use('/authors', authorRoutes);

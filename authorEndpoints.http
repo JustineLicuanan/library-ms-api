@@ -1,0 +1,37 @@
+@host = http://127.0.0.1:{{$dotenv PORT}}
+@id = 1
+
+# Add book endpoint
+POST {{host}}/authors
+Content-Type: application/json
+
+{
+   "name": "",
+   "description": ""
+}
+
+###
+
+# Get all authors endpoint
+GET {{host}}/authors
+
+###
+
+# Get single book endpoint
+GET {{host}}/authors/{{id}}
+
+###
+
+# Delete book endpoint
+DELETE {{host}}/authors/{{id}}
+
+###
+
+# Update book endpoint
+PATCH {{host}}/authors/{{id}}
+Content-Type: application/json
+
+{
+   "name": "",
+   "description": ""
+}
