@@ -1,6 +1,7 @@
 process.env.NODE_ENV !== 'production' && require('dotenv').config();
 
 const {
+	NODE_ENV = 'development',
 	HOST = 'localhost',
 	DB_PORT = '5432',
 	DB_TYPE = 'postgres',
@@ -18,9 +19,18 @@ module.exports = {
 	database: DB_NAME,
 	synchronize: true,
 	logging: false,
-	entities: ['src/entity/**/*.ts'],
-	migrations: ['src/migration/**/*.ts'],
-	subscribers: ['src/subscriber/**/*.ts'],
+	entities:
+		NODE_ENV !== 'production'
+			? ['src/entity/**/*.ts']
+			: ['dist/entity/**/*.js'],
+	migrations:
+		NODE_ENV !== 'production'
+			? ['src/migration/**/*.ts']
+			: ['dist/migration/**/*.js'],
+	subscribers:
+		NODE_ENV !== 'production'
+			? ['src/subscriber/**/*.ts']
+			: ['dist/subscriber/**/*.js'],
 	cli: {
 		entitiesDir: 'src/entity',
 		migrationsDir: 'src/migration',
