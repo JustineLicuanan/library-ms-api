@@ -1,10 +1,14 @@
 import { Request, Response } from 'express';
+import { getConnection } from 'typeorm';
 
 import { areAllArrayElementsIs } from '../lib/validator';
 import { handleClassValidatorError } from '../lib/errorHandler';
-import { Book } from '../entity/Book';
+import { Book, entityName as BOOK_TABLE_NAME } from '../entity/Book';
 import { Author } from '../entity/Author';
-import { BookToAuthor } from '../entity/BookToAuthor';
+import {
+	BookToAuthor,
+	entityName as BOOK_TO_AUTHOR_TABLE_NAME,
+} from '../entity/BookToAuthor';
 
 // Add a book
 export const addBook_post = async (req: Request, res: Response) => {
@@ -196,7 +200,7 @@ export const deleteBook_delete = async (req: Request, res: Response) => {
 	}
 
 	try {
-		const book = await Book.findOne({ isbn });
+		const book = await Book.findOne({ isbn }, { select: ['id'] });
 		if (!book) {
 			res.status(404).json({
 				error: true,
@@ -205,8 +209,21 @@ export const deleteBook_delete = async (req: Request, res: Response) => {
 			return;
 		}
 
+		// Delete book to author relations
+		await getConnection()
+			.createQueryBuilder()
+			.delete()
+			.from(BookToAuthor)
+			.where(`${BOOK_TO_AUTHOR_TABLE_NAME}."bookId" = :id`, { id: book.id })
+			.execute();
+
 		// Remove book to database
-		await book.remove();
+		await getConnection()
+			.createQueryBuilder()
+			.delete()
+			.from(Book)
+			.where(`${BOOK_TABLE_NAME}.id = :id`, { id: book.id })
+			.execute();
 
 		res.json({
 			success: true,

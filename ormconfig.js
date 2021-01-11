@@ -18,7 +18,7 @@ module.exports = {
 	password: DB_PASS,
 	database: DB_NAME,
 	synchronize: true,
-	logging: false,
+	logging: NODE_ENV !== 'production',
 	entities:
 		NODE_ENV !== 'production'
 			? ['src/entity/**/*.ts']
@@ -32,8 +32,10 @@ module.exports = {
 			? ['src/subscriber/**/*.ts']
 			: ['dist/subscriber/**/*.js'],
 	cli: {
-		entitiesDir: 'src/entity',
-		migrationsDir: 'src/migration',
-		subscribersDir: 'src/subscriber',
+		entitiesDir: NODE_ENV !== 'production' ? 'src/entity' : 'dist/entity',
+		migrationsDir:
+			NODE_ENV !== 'production' ? 'src/migration' : 'dist/migration',
+		subscribersDir:
+			NODE_ENV !== 'production' ? 'src/subscriber' : 'dist/subscriber',
 	},
 };

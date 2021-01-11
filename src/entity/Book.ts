@@ -13,7 +13,8 @@ import { IsISBN, IsNumber, IsString } from 'class-validator';
 import { IsISBNAlreadyExist, IsNotBlank } from '../lib/classValidator';
 import { BookToAuthor } from './BookToAuthor';
 
-@Entity('books')
+export const entityName = 'books';
+@Entity(entityName)
 export class Book extends BaseEntity {
 	@PrimaryGeneratedColumn()
 	id: number;

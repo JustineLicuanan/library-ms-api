@@ -13,7 +13,8 @@ import { IsString } from 'class-validator';
 import { IsNotBlank } from '../lib/classValidator';
 import { BookToAuthor } from './BookToAuthor';
 
-@Entity('authors')
+export const entityName = 'authors';
+@Entity(entityName)
 export class Author extends BaseEntity {
 	@PrimaryGeneratedColumn()
 	id: number;

@@ -1,8 +1,9 @@
 import { Request, Response } from 'express';
+import { getConnection } from 'typeorm';
 import isInt from 'validator/lib/isInt';
 
 import { handleClassValidatorError } from '../lib/errorHandler';
-import { Author } from '../entity/Author';
+import { Author, entityName as AUTHOR_TABLE_NAME } from '../entity/Author';
 
 // Add an author
 export const addAuthor_post = async (req: Request, res: Response) => {
@@ -138,7 +139,7 @@ export const deleteAuthor_delete = async (req: Request, res: Response) => {
 	}
 
 	try {
-		const author = await Author.findOne(id);
+		const author = await Author.findOne(id, { select: ['id'] });
 		if (!author) {
 			res.status(404).json({
 				error: true,
@@ -148,7 +149,12 @@ export const deleteAuthor_delete = async (req: Request, res: Response) => {
 		}
 
 		// Remove author to database
-		await author.remove();
+		await getConnection()
+			.createQueryBuilder()
+			.delete()
+			.from(Author)
+			.where(`${AUTHOR_TABLE_NAME}.id = :id`, { id: author.id })
+			.execute();
 
 		res.json({
 			success: true,

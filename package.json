@@ -1,12 +1,13 @@
 {
 	"name": "library-ms-api",
-	"version": "0.14.2",
+	"version": "0.15.4",
 	"main": "dist/app",
 	"scripts": {
 		"dev": "nodemon src/app.ts",
 		"typeorm": "ts-node ./node_modules/typeorm/cli.js",
-		"build": "tsc",
-		"start": "node dist/app"
+		"build": "rm -rf dist && tsc",
+		"start": "node dist/app",
+		"deploy": "git push origin master && git push heroku master"
 	},
 	"keywords": [
 		"nodejs",

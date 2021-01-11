@@ -10,7 +10,8 @@ import { IsNumber } from 'class-validator';
 import { Book } from './Book';
 import { Author } from './Author';
 
-@Entity('books_to_authors')
+export const entityName = 'books_to_authors';
+@Entity(entityName)
 export class BookToAuthor extends BaseEntity {
 	@PrimaryGeneratedColumn()
 	public book_to_author_id!: number;
