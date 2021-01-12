@@ -1,6 +1,6 @@
 {
 	"name": "library-ms-api",
-	"version": "0.17.1",
+	"version": "0.17.2",
 	"main": "dist/app",
 	"scripts": {
 		"rm:dist": "rm -rf dist",
@@ -10,9 +10,7 @@
 		"build": "yarn rm:dist && yarn just:build",
 		"start": "node dist/app",
 		"build:start": "yarn build && yarn start",
-		"push:origin": "git push origin master",
-		"push:heroku": "git push heroku master",
-		"deploy": "yarn push:master && yarn push:heroku"
+		"deploy": "git push heroku master"
 	},
 	"keywords": [
 		"nodejs",
