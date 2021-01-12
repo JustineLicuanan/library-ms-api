@@ -91,7 +91,9 @@ export const updateAuthor_patch = async (req: Request, res: Response) => {
 	}
 
 	try {
-		const author = await Author.findOne(id);
+		const author = await Author.findOne(id, {
+			select: ['id', 'name', 'description'],
+		});
 		if (!author) {
 			res.status(404).json({
 				error: true,
@@ -111,8 +113,16 @@ export const updateAuthor_patch = async (req: Request, res: Response) => {
 			return;
 		}
 
-		// Re-save author to database
-		await author.save();
+		// Create author updates object
+		const authorUpdates = {
+			...(!!req.body.name && { name: req.body.name }),
+			...(!!req.body.description && { description: req.body.description }),
+		};
+
+		// Update author to database
+		if (Object.keys(authorUpdates).length) {
+			await Author.update(author.id, authorUpdates);
+		}
 
 		res.json({
 			success: true,

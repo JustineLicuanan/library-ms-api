@@ -7,6 +7,7 @@ import {
 	UpdateDateColumn,
 	BeforeInsert,
 	OneToMany,
+	BeforeUpdate,
 } from 'typeorm';
 import { IsString } from 'class-validator';
 
@@ -39,6 +40,7 @@ export class Author extends BaseEntity {
 	updated_at: Date;
 
 	@BeforeInsert()
+	@BeforeUpdate()
 	trimStrings() {
 		this.name = this.name.trim();
 		this.description = this.description.trim();

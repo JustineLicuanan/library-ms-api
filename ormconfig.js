@@ -19,23 +19,12 @@ module.exports = {
 	database: DB_NAME,
 	synchronize: true,
 	logging: NODE_ENV !== 'production',
-	entities:
-		NODE_ENV !== 'production'
-			? ['src/entity/**/*.ts']
-			: ['dist/entity/**/*.js'],
-	migrations:
-		NODE_ENV !== 'production'
-			? ['src/migration/**/*.ts']
-			: ['dist/migration/**/*.js'],
-	subscribers:
-		NODE_ENV !== 'production'
-			? ['src/subscriber/**/*.ts']
-			: ['dist/subscriber/**/*.js'],
+	entities: ['dist/entity/**/*.js'],
+	migrations: ['dist/migration/**/*.js'],
+	subscribers: ['dist/subscriber/**/*.js'],
 	cli: {
-		entitiesDir: NODE_ENV !== 'production' ? 'src/entity' : 'dist/entity',
-		migrationsDir:
-			NODE_ENV !== 'production' ? 'src/migration' : 'dist/migration',
-		subscribersDir:
-			NODE_ENV !== 'production' ? 'src/subscriber' : 'dist/subscriber',
+		entitiesDir: 'dist/entity',
+		migrationsDir: 'dist/migration',
+		subscribersDir: 'dist/subscriber',
 	},
 };

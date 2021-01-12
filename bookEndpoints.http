@@ -42,6 +42,5 @@ Content-Type: application/json
    "subject": "",
    "publisher": "",
    "language": "",
-   "number_of_pages": 7,
-   "authors": [1, 2]
+   "number_of_pages": 7
 }

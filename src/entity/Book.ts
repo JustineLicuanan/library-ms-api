@@ -7,6 +7,7 @@ import {
 	UpdateDateColumn,
 	BeforeInsert,
 	OneToMany,
+	BeforeUpdate,
 } from 'typeorm';
 import { IsISBN, IsNumber, IsString } from 'class-validator';
 
@@ -60,6 +61,7 @@ export class Book extends BaseEntity {
 	updated_at: Date;
 
 	@BeforeInsert()
+	@BeforeUpdate()
 	trimStrings() {
 		this.title = this.title.trim();
 		this.subject = this.subject.trim();

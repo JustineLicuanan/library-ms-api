@@ -12,19 +12,18 @@ import {
 
 // Add a book
 export const addBook_post = async (req: Request, res: Response) => {
+	// Check if all authors array elements are integers
 	const { authors: bodyAuthors } = req.body;
+	const authorPass = areAllArrayElementsIs(bodyAuthors, Number.isInteger);
+	if (!authorPass) {
+		res.json({
+			error: true,
+			message: 'Authors field is required, and must be an array of integers',
+		});
+		return;
+	}
 
 	try {
-		// Check if all authors array elements are integers
-		const authorPass = areAllArrayElementsIs(bodyAuthors, Number.isInteger);
-		if (!authorPass) {
-			res.json({
-				error: true,
-				message: 'Authors field is required, and must be an array of integers',
-			});
-			return;
-		}
-
 		// Check if there are missing authors
 		const authors = await Author.findByIds(bodyAuthors);
 		const missingAuthors = bodyAuthors.length - authors.length;
@@ -98,7 +97,7 @@ export const getAllBooks_get = async (req: Request, res: Response) => {
 // Get single book
 export const getBook_get = async (req: Request, res: Response) => {
 	const { isbn } = req.params;
-	if (isbn === null || isbn === undefined) {
+	if (!isbn) {
 		res.status(400).json({
 			error: true,
 			message: 'ISBN cannot be null, or undefined',
@@ -131,7 +130,7 @@ export const getBook_get = async (req: Request, res: Response) => {
 // Update a book
 export const updateBook_patch = async (req: Request, res: Response) => {
 	const { isbn } = req.params;
-	if (isbn === null || isbn === undefined) {
+	if (!isbn) {
 		res.status(400).json({
 			error: true,
 			message: 'ISBN cannot be null, or undefined',
@@ -140,7 +139,20 @@ export const updateBook_patch = async (req: Request, res: Response) => {
 	}
 
 	try {
-		const book = await Book.findOne({ isbn });
+		const book = await Book.findOne(
+			{ isbn },
+			{
+				select: [
+					'id',
+					'isbn',
+					'title',
+					'subject',
+					'publisher',
+					'language',
+					'number_of_pages',
+				],
+			}
+		);
 		if (!book) {
 			res.status(404).json({
 				error: true,
@@ -159,11 +171,12 @@ export const updateBook_patch = async (req: Request, res: Response) => {
 
 		// Validate book
 		let err;
-		if (book.isbn !== req.body.isbn) {
+		if (req.body.isbn !== isbn && req.body.isbn) {
 			err = await handleClassValidatorError(book);
 		} else {
-			const { isbn, ...bookWithoutISBN } = book;
-			err = await handleClassValidatorError(bookWithoutISBN, true);
+			book.isbn = undefined!;
+			err = await handleClassValidatorError(book, true);
+			book.isbn = req.body.isbn || book.isbn;
 		}
 
 		// Check if there are validation errors
@@ -172,8 +185,22 @@ export const updateBook_patch = async (req: Request, res: Response) => {
 			return;
 		}
 
-		// Re-save book to database
-		await book.save();
+		// Create book updates object
+		const bookUpdates = {
+			...(!!req.body.isbn && req.body.isbn !== isbn && { isbn: req.body.isbn }),
+			...(!!req.body.title && { title: req.body.title }),
+			...(!!req.body.subject && { subject: req.body.subject }),
+			...(!!req.body.publisher && { publisher: req.body.publisher }),
+			...(!!req.body.language && { language: req.body.language }),
+			...(!!req.body.number_of_pages && {
+				number_of_pages: req.body.number_of_pages,
+			}),
+		};
+
+		// Update book to database
+		if (Object.keys(bookUpdates).length) {
+			await Book.update(book.id, bookUpdates);
+		}
 
 		res.json({
 			success: true,
@@ -191,7 +218,7 @@ export const updateBook_patch = async (req: Request, res: Response) => {
 // Delete a book
 export const deleteBook_delete = async (req: Request, res: Response) => {
 	const { isbn } = req.params;
-	if (isbn === null || isbn === undefined) {
+	if (!isbn) {
 		res.status(400).json({
 			error: true,
 			message: 'ISBN cannot be null, or undefined',
