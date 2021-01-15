@@ -11,15 +11,18 @@ process.env.NODE_ENV !== 'production' && dotenv.config();
 const { PORT = '3002' } = process.env;
 const app = express();
 
-// Connect to database
-createConnection()
-	.then(() => {
+(async () => {
+	try {
+		// Connect to database
+		await createConnection();
 		console.log('Connected to database successfully');
 
 		// Start the server
 		app.listen(PORT, () => console.log(`Server is listening on port ${PORT}`));
-	})
-	.catch((err) => console.error(err));
+	} catch (err) {
+		console.error(err);
+	}
+})();
 
 // Middlewares
 app.use(express.json());

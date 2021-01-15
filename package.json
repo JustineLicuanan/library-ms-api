@@ -1,6 +1,6 @@
 {
 	"name": "library-ms-api",
-	"version": "0.17.2",
+	"version": "0.17.3",
 	"main": "dist/app",
 	"scripts": {
 		"rm:dist": "rm -rf dist",
