@@ -1,30 +1,32 @@
-process.env.NODE_ENV !== 'production' && require('dotenv').config();
-
-const {
-	NODE_ENV = 'development',
-	HOST = 'localhost',
-	DB_PORT = '5432',
-	DB_TYPE = 'postgres',
-	DB_NAME = 'test',
-	DB_USERNAME = 'postgres',
-	DB_PASS = 'test',
-} = process.env;
-
-module.exports = {
-	type: DB_TYPE,
-	host: HOST,
-	port: DB_PORT,
-	username: DB_USERNAME,
-	password: DB_PASS,
-	database: DB_NAME,
-	synchronize: true,
-	logging: NODE_ENV !== 'production',
-	entities: ['dist/entity/**/*.js'],
-	migrations: ['dist/migration/**/*.js'],
-	subscribers: ['dist/subscriber/**/*.js'],
-	cli: {
-		entitiesDir: 'dist/entity',
-		migrationsDir: 'dist/migration',
-		subscribersDir: 'dist/subscriber',
+module.exports = [
+	{
+		name: 'development',
+		type: 'better-sqlite3',
+		database: 'database.sqlite',
+		synchronize: true,
+		logging: true,
+		entities: ['src/entity/**/*.ts'],
+		migrations: ['src/migration/**/*.ts'],
+		subscribers: ['src/subscriber/**/*.ts'],
+		cli: {
+			entitiesDir: 'src/entity',
+			migrationsDir: 'src/migration',
+			subscribersDir: 'src/subscriber',
+		},
 	},
-};
+	{
+		name: 'production',
+		type: 'postgres',
+		url: process.env.DATABASE_URL,
+		synchronize: true, // Switch this to false once you have the initial tables created and use migrations instead
+		logging: false,
+		entities: ['dist/entity/**/*.js'],
+		migrations: ['dist/migration/**/*.js'],
+		subscribers: ['dist/subscriber/**/*.js'],
+		cli: {
+			entitiesDir: 'dist/entity',
+			migrationsDir: 'dist/migration',
+			subscribersDir: 'dist/subscriber',
+		},
+	},
+];
