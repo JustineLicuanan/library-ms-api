@@ -5,8 +5,12 @@ import {
 	Column,
 	BaseEntity,
 	BeforeInsert,
+	ManyToMany,
+	JoinTable,
 } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
+
+import { Author } from './Author';
 
 @Entity()
 @ObjectType()
@@ -38,6 +42,10 @@ export class Book extends BaseEntity {
 	@Column()
 	@Field(() => Int)
 	number_of_pages: number;
+
+	@ManyToMany(() => Author, (author) => author.books)
+	@JoinTable()
+	authors: Author[];
 
 	@BeforeInsert()
 	genIdAndTrim() {

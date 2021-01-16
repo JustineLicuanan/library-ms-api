@@ -5,6 +5,7 @@ import { ApolloServer } from 'apollo-server-express';
 import { buildSchema } from 'type-graphql';
 
 import { BookResolver } from './resolvers/BookResolver';
+import { AuthorResolver } from './resolvers/AuthorResolver';
 
 (async () => {
 	const { NODE_ENV = 'development', PORT = '4000' } = process.env;
@@ -15,7 +16,7 @@ import { BookResolver } from './resolvers/BookResolver';
 
 	const apolloServer = new ApolloServer({
 		schema: await buildSchema({
-			resolvers: [BookResolver],
+			resolvers: [BookResolver, AuthorResolver],
 			validate: true,
 		}),
 		context: ({ req, res }) => ({ req, res }),
