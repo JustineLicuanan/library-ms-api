@@ -1,5 +1,4 @@
 node_modules/
-.env
 dist/
-bookTest.http
-authorTest.http
+database.sqlite*
+.env
