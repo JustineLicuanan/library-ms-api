@@ -6,7 +6,7 @@ import * as ResolverTypes from '../types/AuthorResolverTypes';
 
 @Resolver()
 export class AuthorResolver {
-	@Mutation(() => Author)
+	@Mutation(() => ResolverTypes.CreateAuthorObject)
 	async createAuthor(
 		@Arg('input', () => ResolverTypes.CreateAuthorInput)
 		input: ResolverTypes.CreateAuthorInput
@@ -16,7 +16,7 @@ export class AuthorResolver {
 
 	@Query(() => [Author])
 	async getAllAuthors() {
-		return await Author.find();
+		return await Author.find({ relations: ['books'] });
 	}
 
 	@Mutation(() => Boolean)

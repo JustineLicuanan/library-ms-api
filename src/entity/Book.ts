@@ -45,6 +45,7 @@ export class Book extends BaseEntity {
 
 	@ManyToMany(() => Author, (author) => author.books)
 	@JoinTable()
+	@Field(() => [Author])
 	authors: Author[];
 
 	@BeforeInsert()

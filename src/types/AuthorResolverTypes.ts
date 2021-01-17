@@ -1,4 +1,4 @@
-import { Field, InputType } from 'type-graphql';
+import { Field, InputType, ObjectType } from 'type-graphql';
 import { IsUUID } from 'class-validator';
 
 import { IsNotBlank } from '../lib/IsNotBlank';
@@ -14,10 +14,22 @@ export class CreateAuthorInput {
 	description: string;
 }
 
+@ObjectType()
+export class CreateAuthorObject {
+	@Field()
+	id: string;
+
+	@Field()
+	name: string;
+
+	@Field()
+	description: string;
+}
+
 @InputType()
 export class UpdateAuthorInput {
 	@Field()
-	@IsUUID()
+	@IsUUID(4)
 	id: string;
 
 	@Field({ nullable: true })
@@ -32,6 +44,6 @@ export class UpdateAuthorInput {
 @InputType()
 export class DeleteAuthorInput {
 	@Field()
-	@IsUUID()
+	@IsUUID(4)
 	id: string;
 }

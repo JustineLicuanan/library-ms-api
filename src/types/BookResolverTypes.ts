@@ -1,5 +1,5 @@
 import { Field, InputType, Int } from 'type-graphql';
-import { IsISBN, IsUUID } from 'class-validator';
+import { ArrayNotEmpty, IsISBN, IsUUID } from 'class-validator';
 
 import { IsNotBlank } from '../lib/IsNotBlank';
 import { IsIsbnNotExist } from '../lib/IsIsbnNotExist';
@@ -29,12 +29,17 @@ export class CreateBookInput {
 
 	@Field(() => Int)
 	number_of_pages: number;
+
+	@Field(() => [String])
+	@ArrayNotEmpty()
+	@IsUUID(4, { each: true })
+	authorIds: string[];
 }
 
 @InputType()
 export class UpdateBookInput {
 	@Field()
-	@IsUUID()
+	@IsUUID(4)
 	id: string;
 
 	@Field({ nullable: true })

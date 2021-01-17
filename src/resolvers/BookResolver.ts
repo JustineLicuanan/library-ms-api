@@ -2,6 +2,7 @@ import { isInt, isISBN, isString } from 'class-validator';
 import { Arg, Mutation, Query, Resolver } from 'type-graphql';
 
 import { Book } from '../entity/Book';
+import { Author } from '../entity/Author';
 import * as ResolverTypes from '../types/BookResolverTypes';
 
 @Resolver()
@@ -9,14 +10,19 @@ export class BookResolver {
 	@Mutation(() => Book)
 	async createBook(
 		@Arg('input', () => ResolverTypes.CreateBookInput)
-		input: ResolverTypes.CreateBookInput
+		{ authorIds, ...input }: ResolverTypes.CreateBookInput
 	) {
-		return await Book.create(input).save();
+		const authors = await Author.findByIds(authorIds);
+		const missingAuthorsCount = authorIds.length - authors.length;
+
+		if (missingAuthorsCount)
+			throw new Error(`${missingAuthorsCount} Author/s not found`);
+		return await Book.create({ ...input, authors }).save();
 	}
 
 	@Query(() => [Book])
 	async getAllBooks() {
-		return await Book.find();
+		return await Book.find({ relations: ['authors'] });
 	}
 
 	@Mutation(() => Boolean)
@@ -34,6 +40,7 @@ export class BookResolver {
 				number_of_pages: input.number_of_pages,
 			}),
 		};
+
 		return (
 			!!Object.keys(bookUpdates).length &&
 			!!(await Book.update(input.id, bookUpdates)).affected

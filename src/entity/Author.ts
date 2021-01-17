@@ -27,6 +27,7 @@ export class Author extends BaseEntity {
 	description: string;
 
 	@ManyToMany(() => Book, (book) => book.authors)
+	@Field(() => [Book])
 	books: Book[];
 
 	@BeforeInsert()
