@@ -4,7 +4,7 @@ import { IsUUID } from 'class-validator';
 import { IsNotBlank } from '../lib/IsNotBlank';
 
 @InputType()
-export class CreateAuthorInput {
+export class AddAuthorInput {
 	@Field()
 	@IsNotBlank()
 	name: string;
@@ -15,7 +15,7 @@ export class CreateAuthorInput {
 }
 
 @ObjectType()
-export class CreateAuthorObject {
+export class AddAuthorObject {
 	@Field()
 	id: string;
 

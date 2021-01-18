@@ -8,9 +8,9 @@ import * as ResolverTypes from '../types/BookResolverTypes';
 @Resolver()
 export class BookResolver {
 	@Mutation(() => Book)
-	async createBook(
-		@Arg('input', () => ResolverTypes.CreateBookInput)
-		{ authorIds, ...input }: ResolverTypes.CreateBookInput
+	async addBook(
+		@Arg('input', () => ResolverTypes.AddBookInput)
+		{ authorIds, ...input }: ResolverTypes.AddBookInput
 	) {
 		const authors = await Author.findByIds(authorIds);
 		const missingAuthorsCount = authorIds.length - authors.length;

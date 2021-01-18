@@ -6,10 +6,10 @@ import * as ResolverTypes from '../types/AuthorResolverTypes';
 
 @Resolver()
 export class AuthorResolver {
-	@Mutation(() => ResolverTypes.CreateAuthorObject)
-	async createAuthor(
-		@Arg('input', () => ResolverTypes.CreateAuthorInput)
-		input: ResolverTypes.CreateAuthorInput
+	@Mutation(() => ResolverTypes.AddAuthorObject)
+	async addAuthor(
+		@Arg('input', () => ResolverTypes.AddAuthorInput)
+		input: ResolverTypes.AddAuthorInput
 	) {
 		return await Author.create(input).save();
 	}

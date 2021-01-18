@@ -5,7 +5,7 @@ import { IsNotBlank } from '../lib/IsNotBlank';
 import { IsIsbnNotExist } from '../lib/IsIsbnNotExist';
 
 @InputType()
-export class CreateBookInput {
+export class AddBookInput {
 	@Field()
 	@IsISBN()
 	@IsIsbnNotExist()
