@@ -1,4 +1,4 @@
-import { registerEnumType } from 'type-graphql';
+import { Field, ObjectType, registerEnumType } from 'type-graphql';
 
 export enum AccountStatus {
 	ACTIVE = 'ACTIVE',
@@ -7,11 +7,34 @@ export enum AccountStatus {
 	BLACKLISTED = 'BLACKLISTED',
 	NONE = 'NONE',
 }
+registerEnumType(AccountStatus, { name: 'AccountStatus' });
 
-export enum AccountRole {
-	LIBRARIAN = 'LIBRARIAN',
-	MEMBER = 'MEMBER',
+@ObjectType()
+export class Address {
+	@Field()
+	streetAddress: string;
+
+	@Field()
+	city: string;
+
+	@Field()
+	state: string;
+
+	@Field()
+	zipCode: string;
+
+	@Field()
+	country: string;
 }
 
-registerEnumType(AccountStatus, { name: 'AccountStatus' });
-registerEnumType(AccountRole, { name: 'AccountRole' });
+@ObjectType()
+export class Person {
+	@Field()
+	name: string;
+
+	@Field(() => Address)
+	address: Address;
+
+	@Field()
+	phone: string;
+}
