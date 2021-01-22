@@ -10,12 +10,12 @@ export class AuthorResolver {
 	async addAuthor(
 		@Arg('input', () => ResolverTypes.AddAuthorInput)
 		input: ResolverTypes.AddAuthorInput
-	) {
+	): Promise<ResolverTypes.AddAuthorObject> {
 		return await Author.create(input).save();
 	}
 
 	@Query(() => [Author])
-	async getAllAuthors() {
+	async getAllAuthors(): Promise<Author[]> {
 		return await Author.find({ relations: ['books'] });
 	}
 
@@ -23,7 +23,7 @@ export class AuthorResolver {
 	async updateAuthor(
 		@Arg('input', () => ResolverTypes.UpdateAuthorInput)
 		input: ResolverTypes.UpdateAuthorInput
-	) {
+	): Promise<boolean> {
 		const authorUpdates = {
 			...(isString(input.name) && { name: input.name }),
 			...(isString(input.description) && { description: input.description }),
@@ -38,7 +38,7 @@ export class AuthorResolver {
 	async deleteAuthor(
 		@Arg('input', () => ResolverTypes.DeleteAuthorInput)
 		input: ResolverTypes.DeleteAuthorInput
-	) {
+	): Promise<boolean> {
 		return !!(await Author.delete(input)).affected;
 	}
 }

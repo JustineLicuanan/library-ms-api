@@ -1,10 +1,11 @@
-import { Field } from 'type-graphql';
+import { Field, ObjectType } from 'type-graphql';
 import { BaseEntity, BeforeInsert, Column, PrimaryColumn } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 import { hash as bcryptHash } from 'bcryptjs';
 
 import * as Types from '../types/AccountTypes';
 
+@ObjectType()
 export abstract class Account extends BaseEntity {
 	@PrimaryColumn('uuid')
 	@Field()

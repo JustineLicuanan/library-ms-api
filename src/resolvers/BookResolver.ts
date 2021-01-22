@@ -11,7 +11,7 @@ export class BookResolver {
 	async addBook(
 		@Arg('input', () => ResolverTypes.AddBookInput)
 		{ authorIds, ...input }: ResolverTypes.AddBookInput
-	) {
+	): Promise<Book> {
 		const authors = await Author.findByIds(authorIds);
 		const missingAuthorsCount = authorIds.length - authors.length;
 
@@ -21,7 +21,7 @@ export class BookResolver {
 	}
 
 	@Query(() => [Book])
-	async getAllBooks() {
+	async getAllBooks(): Promise<Book[]> {
 		return await Book.find({ relations: ['authors'] });
 	}
 
@@ -29,7 +29,7 @@ export class BookResolver {
 	async updateBook(
 		@Arg('input', () => ResolverTypes.UpdateBookInput)
 		input: ResolverTypes.UpdateBookInput
-	) {
+	): Promise<boolean> {
 		const bookUpdates = {
 			...(isISBN(input.isbn) && { isbn: input.isbn }),
 			...(isString(input.title) && { title: input.title }),
@@ -51,7 +51,7 @@ export class BookResolver {
 	async deleteBook(
 		@Arg('input', () => ResolverTypes.DeleteBookInput)
 		input: ResolverTypes.DeleteBookInput
-	) {
+	): Promise<boolean> {
 		return !!(await Book.delete(input)).affected;
 	}
 }

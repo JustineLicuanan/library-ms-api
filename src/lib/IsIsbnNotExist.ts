@@ -24,10 +24,7 @@ export const IsIsbnNotExist = (
 			async validate(isbn: string, args: ValidationArguments) {
 				if (!isISBN(isbn)) return true;
 				const book = await Book.findOne({ isbn }, { select: ['id'] });
-				return (
-					!book ||
-					(!!forUpdate && book.id === (args.object as { id: string }).id)
-				);
+				return !book || (!!forUpdate && book.id === (args.object as any).id);
 			},
 		},
 	});

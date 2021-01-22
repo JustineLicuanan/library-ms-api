@@ -32,7 +32,7 @@ export class Person {
 	@Field()
 	name: string;
 
-	@Field(() => Address)
+	@Field()
 	address: Address;
 
 	@Field()
