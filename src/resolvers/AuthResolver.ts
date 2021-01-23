@@ -1,17 +1,30 @@
-import { Arg, Ctx, Mutation, Query, Resolver } from 'type-graphql';
+import {
+	Arg,
+	Ctx,
+	Mutation,
+	Query,
+	Resolver,
+	UseMiddleware,
+} from 'type-graphql';
 import bcrypt from 'bcryptjs';
 
 import { Member } from '../entity/Member';
 import * as ResolverTypes from '../types/AuthResolverTypes';
 import { MyContext } from '../types/MyContext';
+import { Librarian } from '../entity/Librarian';
+import { canRegisterLibrarian } from '../middlewares/canRegisterLibrarian';
 
 @Resolver()
 export class AuthResolver {
 	@Mutation(() => Member)
+	@UseMiddleware(canRegisterLibrarian)
 	async register(
-		@Arg('input') input: ResolverTypes.RegisterInput
+		@Arg('input') { isLibrarian, ...input }: ResolverTypes.RegisterInput
 	): Promise<Member> {
-		return await Member.create(input).save();
+		return {
+			...(await (isLibrarian ? Librarian : Member).create(input).save()),
+			isLibrarian,
+		} as Member;
 	}
 
 	@Mutation(() => Member)
@@ -19,26 +32,29 @@ export class AuthResolver {
 		@Arg('input') input: ResolverTypes.LoginInput,
 		@Ctx() { req }: MyContext
 	): Promise<Member> {
-		const member = await Member.findOne({ email: input.email });
-		if (!member) throw new Error('Email is incorrect');
+		const user = await (input.isLibrarian ? Librarian : Member).findOne({
+			email: input.email,
+		});
+		if (!user) throw new Error('Email is incorrect');
 
-		const isMatch = await bcrypt.compare(input.password, member.password);
+		const isMatch = await bcrypt.compare(input.password, user.password);
 		if (!isMatch) throw new Error('Password is incorrect');
 
-		(req.session as any).user = member;
-		return member;
+		(req.session as any).user = {
+			...user,
+			isLibrarian: input.isLibrarian,
+		};
+		return (req.session as any).user;
 	}
 
 	@Query(() => Member, { nullable: true })
-	async me(@Ctx() { req }: MyContext): Promise<Member | undefined> {
+	me(@Ctx() { req }: MyContext): Member | undefined {
 		return (req.session as any).user
 			? {
 					...(req.session as any).user,
-					...(!!(req.session as any).user.dateOfMembership && {
-						dateOfMembership: new Date(
-							(req.session as any).user.dateOfMembership
-						),
-					}),
+					dateOfMembership: new Date(
+						(req.session as any).user.dateOfMembership
+					),
 			  }
 			: undefined;
 	}

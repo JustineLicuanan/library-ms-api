@@ -1,6 +1,6 @@
 {
 	"name": "library-ms-api",
-	"version": "1.6.0",
+	"version": "1.7.0",
 	"license": "MIT",
 	"engines": {
 		"node": "14.15.1"

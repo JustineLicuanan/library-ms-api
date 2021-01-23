@@ -8,5 +8,5 @@ import { Account } from './Account';
 export class Librarian extends Account {
 	@CreateDateColumn()
 	@Field()
-	createdAt: Date;
+	dateOfMembership: Date;
 }

@@ -43,6 +43,9 @@ export class RegisterInput_Person {
 
 @InputType()
 export class RegisterInput {
+	@Field({ nullable: true })
+	isLibrarian?: true;
+
 	@Field()
 	@IsEmail()
 	@IsEmailNotExist()
@@ -59,6 +62,9 @@ export class RegisterInput {
 
 @InputType()
 export class LoginInput {
+	@Field({ nullable: true })
+	isLibrarian?: true;
+
 	@Field()
 	email: string;
 

@@ -6,6 +6,7 @@ import {
 } from 'class-validator';
 
 import { Member } from '../entity/Member';
+import { Librarian } from '../entity/Librarian';
 
 export const IsEmailNotExist = (
 	forUpdate?: true,
@@ -15,7 +16,7 @@ export const IsEmailNotExist = (
 		name: 'isEmailNotExist',
 		target: object.constructor,
 		propertyName,
-		...(!!forUpdate && { constraints: ['id'] }),
+		constraints: ['id', 'isLibrarian'],
 		options: {
 			message: 'email already exist',
 			...validationOptions,
@@ -23,10 +24,11 @@ export const IsEmailNotExist = (
 		validator: {
 			async validate(email: string, args: ValidationArguments) {
 				if (!isEmail(email)) return true;
-				const member = await Member.findOne({ email }, { select: ['id'] });
-				return (
-					!member || (!!forUpdate && member.id === (args.object as any).id)
-				);
+				const user = await ((args.object as any).isLibrarian
+					? Librarian
+					: Member
+				).findOne({ email }, { select: ['id'] });
+				return !user || (!!forUpdate && user.id === (args.object as any).id);
 			},
 		},
 	});
