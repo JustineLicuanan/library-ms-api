@@ -1,13 +1,12 @@
 import 'reflect-metadata';
-import { createConnection, getConnectionOptions } from 'typeorm';
+import { buildSchema } from 'type-graphql';
+import { ApolloServer } from 'apollo-server-express';
 import express from 'express';
 import session from 'express-session';
-import { ApolloServer } from 'apollo-server-express';
-import { buildSchema } from 'type-graphql';
+import { createConnection, getConnectionOptions } from 'typeorm';
 
-import { BookResolver } from './resolvers/BookResolver';
-import { AuthorResolver } from './resolvers/AuthorResolver';
 import { AuthResolver } from './resolvers/AuthResolver';
+import { BookItemResolver } from './resolvers/BookItemResolver';
 
 (async () => {
 	const {
@@ -36,7 +35,7 @@ import { AuthResolver } from './resolvers/AuthResolver';
 
 	const apolloServer = new ApolloServer({
 		schema: await buildSchema({
-			resolvers: [BookResolver, AuthorResolver, AuthResolver],
+			resolvers: [AuthResolver, BookItemResolver],
 			validate: true,
 		}),
 		context: ({ req, res }) => ({ req, res }),

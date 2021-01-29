@@ -1,20 +1,9 @@
-import { Field, Int, ObjectType } from 'type-graphql';
-import {
-	Entity,
-	PrimaryColumn,
-	Column,
-	BaseEntity,
-	BeforeInsert,
-	ManyToMany,
-	JoinTable,
-} from 'typeorm';
+import { PrimaryColumn, Column, BaseEntity, BeforeInsert } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
+import { Field, Int, ObjectType } from 'type-graphql';
 
-import { Author } from './Author';
-
-@Entity()
 @ObjectType()
-export class Book extends BaseEntity {
+export abstract class Book extends BaseEntity {
 	@PrimaryColumn('uuid')
 	@Field()
 	id: string;
@@ -41,16 +30,15 @@ export class Book extends BaseEntity {
 
 	@Column()
 	@Field(() => Int)
-	number_of_pages: number;
-
-	@ManyToMany(() => Author, (author) => author.books)
-	@JoinTable()
-	@Field(() => [Author])
-	authors: Author[];
+	numberOfPages: number;
 
 	@BeforeInsert()
-	genIdAndTrim() {
+	genId() {
 		this.id = uuidv4();
+	}
+
+	@BeforeInsert()
+	trimStrings() {
 		this.title = this.title.trim();
 		this.subject = this.subject.trim();
 		this.publisher = this.publisher.trim();

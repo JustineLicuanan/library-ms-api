@@ -1,62 +1,72 @@
 import {
 	Arg,
+	ArgumentValidationError,
 	Ctx,
 	Mutation,
 	Query,
 	Resolver,
-	UseMiddleware,
 } from 'type-graphql';
 import bcrypt from 'bcryptjs';
 
-import { Member } from '../entity/Member';
-import * as ResolverTypes from '../types/AuthResolverTypes';
-import { MyContext } from '../types/MyContext';
-import { Librarian } from '../entity/Librarian';
-import { canRegisterLibrarian } from '../middlewares/canRegisterLibrarian';
+import { User } from '../entity/User';
+import * as ResolverTypes from '../graphql-types/AuthResolverTypes';
+import { MyContext } from '../graphql-types/MyContext';
 
 @Resolver()
 export class AuthResolver {
-	@Mutation(() => Member)
-	@UseMiddleware(canRegisterLibrarian)
+	@Mutation(() => User)
 	async register(
-		@Arg('input') { isLibrarian, ...input }: ResolverTypes.RegisterInput
-	): Promise<Member> {
-		return {
-			...(await (isLibrarian ? Librarian : Member).create(input).save()),
-			isLibrarian,
-		} as Member;
+		@Arg('input') input: ResolverTypes.RegisterInput
+	): Promise<User> {
+		return await User.create(input).save();
 	}
 
-	@Mutation(() => Member)
+	@Mutation(() => User)
 	async login(
 		@Arg('input') input: ResolverTypes.LoginInput,
 		@Ctx() { req }: MyContext
-	): Promise<Member> {
-		const user = await (input.isLibrarian ? Librarian : Member).findOne({
-			email: input.email,
-		});
-		if (!user) throw new Error('Email is incorrect');
+	): Promise<User> {
+		const user = await User.findOne({ email: input.email });
+
+		if (!user) {
+			throw new ArgumentValidationError([
+				{
+					target: {
+						email: input.email,
+					},
+					value: input.email,
+					property: 'email',
+					constraints: {
+						isEmailCorrect: 'email, or password is incorrect',
+					},
+				},
+			]);
+		}
 
 		const isMatch = await bcrypt.compare(input.password, user.password);
-		if (!isMatch) throw new Error('Password is incorrect');
 
-		(req.session as any).user = {
-			...user,
-			isLibrarian: input.isLibrarian,
-		};
-		return (req.session as any).user;
+		if (!isMatch) {
+			throw new ArgumentValidationError([
+				{
+					target: {
+						email: input.email,
+					},
+					value: input.email,
+					property: 'email',
+					constraints: {
+						isEmailCorrect: 'email, or password is incorrect',
+					},
+				},
+			]);
+		}
+
+		(req.session as any).user = user;
+		return user;
 	}
 
-	@Query(() => Member, { nullable: true })
-	me(@Ctx() { req }: MyContext): Member | undefined {
-		return (req.session as any).user
-			? {
-					...(req.session as any).user,
-					dateOfMembership: new Date(
-						(req.session as any).user.dateOfMembership
-					),
-			  }
-			: undefined;
+	@Query(() => User, { nullable: true })
+	async me(@Ctx() { req }: MyContext): Promise<User | undefined> {
+		return (req.session as any).user;
 	}
 
 	@Mutation(() => Boolean)

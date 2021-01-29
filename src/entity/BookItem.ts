@@ -1,34 +1,37 @@
 import { Field, Float, ObjectType } from 'type-graphql';
-import { Column, Entity, ManyToOne } from 'typeorm';
+import { Column, Entity } from 'typeorm';
 
-import * as Types from '../types/BookItemTypes';
 import { Book } from './Book';
-import { Rack } from './Rack';
+import * as Types from '../graphql-types/BookItemTypes';
 
 @Entity()
 @ObjectType()
 export class BookItem extends Book {
-	@Column({ default: false })
+	@Column('text', { unique: true })
+	@Field()
+	barcode: string;
+
+	@Column()
 	@Field()
 	isReferenceOnly: boolean;
 
-	@Column()
-	@Field()
-	borrowed: Date;
+	@Column({ nullable: true })
+	@Field({ nullable: true })
+	borrowed?: Date;
 
-	@Column()
-	@Field()
-	dueDate: Date;
+	@Column({ nullable: true })
+	@Field({ nullable: true })
+	dueDate?: Date;
 
-	@Column()
+	@Column('numeric', { precision: 2 })
 	@Field(() => Float)
 	price: number;
 
-	@Column('text', { default: Types.BookFormat.HARDCOVER })
+	@Column('text')
 	@Field(() => Types.BookFormat)
 	format: Types.BookFormat;
 
-	@Column('text', { default: Types.BookStatus.AVAILABLE })
+	@Column('text')
 	@Field(() => Types.BookStatus)
 	status: Types.BookStatus;
 
@@ -39,8 +42,4 @@ export class BookItem extends Book {
 	@Column()
 	@Field()
 	publicationDate: Date;
-
-	@ManyToOne(() => Rack, (rack) => rack.bookItems)
-	@Field(() => Rack)
-	rack: Rack;
 }
