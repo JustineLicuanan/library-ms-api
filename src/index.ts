@@ -13,6 +13,7 @@ import { BookItemResolver } from './resolvers/BookItemResolver';
 		NODE_ENV = 'development',
 		PORT = '4000',
 		SESSION_SECRET = 'aslkdfjoiq12312',
+		CLIENT_URI = 'http://localhost:3000',
 	} = process.env;
 	const app = express();
 
@@ -26,6 +27,7 @@ import { BookItemResolver } from './resolvers/BookItemResolver';
 				httpOnly: true,
 				secure: NODE_ENV === 'production',
 				maxAge: 1000 * 60 * 60 * 24 * 7 * 365, // 7 years
+				sameSite: 'none',
 			},
 		})
 	);
@@ -46,7 +48,12 @@ import { BookItemResolver } from './resolvers/BookItemResolver';
 		},
 	});
 
-	apolloServer.applyMiddleware({ app, cors: false });
+	const corsOptions = {
+		origin: CLIENT_URI,
+		credentials: true,
+	};
+
+	apolloServer.applyMiddleware({ app, cors: corsOptions });
 	app.listen(PORT, () =>
 		console.log(`Server started at http://localhost:${PORT}/graphql`)
 	);
