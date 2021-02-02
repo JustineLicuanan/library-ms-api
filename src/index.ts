@@ -4,9 +4,11 @@ import { ApolloServer } from 'apollo-server-express';
 import express from 'express';
 import session from 'express-session';
 import { createConnection, getConnectionOptions } from 'typeorm';
+import { TypeormStore } from 'connect-typeorm';
 
 import { AuthResolver } from './resolvers/AuthResolver';
 import { BookItemResolver } from './resolvers/BookItemResolver';
+import { Session } from './entity/Session';
 
 (async () => {
 	const {
@@ -17,8 +19,19 @@ import { BookItemResolver } from './resolvers/BookItemResolver';
 	} = process.env;
 	const app = express();
 
+	const options = await getConnectionOptions(NODE_ENV);
+	const connection = await createConnection({
+		...options,
+		name: 'default',
+	});
+	const sessionRepo = connection.getRepository(Session);
+
 	app.use(
 		session({
+			store: new TypeormStore({
+				cleanupLimit: 2,
+				ttl: 86400,
+			}).connect(sessionRepo),
 			name: 'qid',
 			secret: SESSION_SECRET,
 			resave: false,
@@ -31,9 +44,6 @@ import { BookItemResolver } from './resolvers/BookItemResolver';
 			},
 		})
 	);
-
-	const options = await getConnectionOptions(NODE_ENV);
-	await createConnection({ ...options, name: 'default' });
 
 	const apolloServer = new ApolloServer({
 		schema: await buildSchema({
