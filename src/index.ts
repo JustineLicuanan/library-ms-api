@@ -26,6 +26,7 @@ import { Session } from './entity/Session';
 	});
 	const sessionRepo = connection.getRepository(Session);
 
+	NODE_ENV === 'production' && app.set('trust proxy', 1); // Trust first proxy
 	app.use(
 		session({
 			store: new TypeormStore({
