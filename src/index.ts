@@ -51,11 +51,13 @@ import { Session } from './entity/Session';
 			validate: true,
 		}),
 		context: ({ req, res }) => ({ req, res }),
-		playground: {
-			settings: {
-				'request.credentials': 'include',
+		...(NODE_ENV !== 'production' && {
+			playground: {
+				settings: {
+					'request.credentials': 'include',
+				},
 			},
-		},
+		}),
 	});
 
 	const corsOptions = {
